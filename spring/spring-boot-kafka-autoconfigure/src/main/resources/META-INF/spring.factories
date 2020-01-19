@@ -1,0 +1,1 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.moppletop.ddd.autoconfigure.kafka.DDDKafkaAutoConfiguration

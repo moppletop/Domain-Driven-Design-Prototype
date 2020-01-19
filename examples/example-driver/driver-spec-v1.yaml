@@ -1,0 +1,171 @@
+openapi: '3.0.2'
+
+info:
+  title: Driver Domain
+  version: 1.0.0
+  description: "A simple prototype for Domain Driver Design (DDD) using the \"command -> aggregate -> event\" flow with a relational event store and state management framework, in addition PostgreSQL event streams with Kafka are used for asynchronous event driven operations."
+  contact:
+    name: Sam Lloyd
+    url: https://github.com/moppletop
+
+servers:
+  - url: "http://localhost:9090/"
+
+tags:
+  - name: driver-command
+    description: Operations for registering and amending drivers
+  - name: driver-query
+    description: Operations for querying drivers
+paths:
+
+  /v1/driver/command/register:
+    post:
+      summary: Registers a new driver
+      operationId: registerDriver
+      tags:
+        - driver-command
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterDriverDto'
+      responses:
+        200:
+          description: Driver has been successfully registered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Driver'
+        400:
+          $ref: '#/components/responses/400'
+        500:
+          $ref: '#/components/responses/500'
+
+  /v1/driver/command/amend:
+    post:
+      summary: Amend an existing driver
+      operationId: amendDriver
+      tags:
+        - driver-command
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AmendDriverDto'
+      responses:
+        200:
+          description: Driver has been successfully amended
+        400:
+          $ref: '#/components/responses/400'
+        500:
+          $ref: '#/components/responses/500'
+
+  /v1/driver/query/get:
+    get:
+      summary: Get a driver by their driverId
+      operationId: getDriver
+      tags:
+        - driver-query
+      parameters:
+        - name: driverId
+          in: query
+          required: true
+          allowEmptyValue: false
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Retrieved driver
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Driver'
+        400:
+          $ref: '#/components/responses/400'
+        500:
+          $ref: '#/components/responses/500'
+
+components:
+  schemas:
+
+    # Common Objects
+    Errors:
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+      required:
+        - errors
+    Error:
+      properties:
+        title:
+          type: string
+          example: 'Validation error'
+        detail:
+          type: string
+          example: Name must be less or equal to 64 characters
+      required:
+        - title
+        - detail
+
+    # Command Objects
+    RegisterDriverDto:
+      properties:
+        name:
+          type: string
+          example: 'Sam Lloyd'
+          minimum: 1
+          maximum: 64
+        dateOfBirth:
+          type: string
+          format: date
+          example: '1999-05-20'
+          description: Must be greater than or equal to 16 years ago
+      required:
+        - name
+        - dateOfBirth
+    AmendDriverDto:
+      properties:
+        driverId:
+          type: string
+          format: uuid
+        name:
+          type: string
+          example: 'Sam Lloyd'
+      required:
+        - name
+        - dateOfBirth
+
+    # Domain Objects
+    Driver:
+      properties:
+        driverId:
+          type: string
+          format: uuid
+        name:
+          type: string
+          example: 'Sam Lloyd'
+        dateOfBirth:
+          type: string
+          format: date
+          example: '1999-05-20'
+      required:
+        - id
+        - name
+        - dateOfBirth
+
+  responses:
+    400:
+      description: Request failed, client error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Errors'
+    500:
+      description: Request failed, server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Errors'

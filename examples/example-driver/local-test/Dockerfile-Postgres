@@ -1,0 +1,6 @@
+FROM debezium/postgres
+
+ADD ./initdb.d /docker-entrypoint-initdb.d/
+
+# This ensures that the connector container can get at the replication logs
+RUN echo -e "host replication postgres 192.168.0.0/16 trust\n" >> "/var/lib/postgresql/data/pg_hba.conf"

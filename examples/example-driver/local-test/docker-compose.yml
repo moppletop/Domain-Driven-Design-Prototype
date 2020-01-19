@@ -1,0 +1,63 @@
+version: '3.4'
+
+services:
+
+  driver_app:
+    container_name: driver_app
+    image: local-test/driver_app
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    ports:
+      - 9090:9090
+    depends_on:
+      - kafka
+
+  postgres:
+    container_name: postgres
+    image: local-test/postgres
+    build:
+      context: .
+      dockerfile: Dockerfile-Postgres
+    command: [ "-c", "log_min_duration_statement=100" ]
+    environment:
+      POSTGRES_PASSWORD: "password"
+    ports:
+      - 5432:5432
+
+  zookeeper:
+    container_name: zookeeper
+    image: debezium/zookeeper
+    ports:
+      - 2181:2181
+      - 2888:2888
+      - 3888:3888
+    links:
+      - postgres
+
+  kafka:
+    container_name: kafka
+    image: debezium/kafka
+    ports:
+      - 9092:9092
+    environment:
+      ZOOKEEPER_CONNECT: zookeeper
+      CREATE_TOPICS: dbserver1.public.event:2:1
+    links:
+      - postgres
+      - zookeeper
+
+  connect:
+    container_name: connect
+    image: debezium/connect
+    ports:
+      - 8083:8083
+    environment:
+      GROUP_ID: 1
+      CONFIG_STORAGE_TOPIC: postgres-connect-configs
+      OFFSET_STORAGE_TOPIC: postgres-connect-offsets
+      BOOTSTRAP_SERVERS: kafka:9092
+    links:
+      - zookeeper
+      - postgres
+      - kafka

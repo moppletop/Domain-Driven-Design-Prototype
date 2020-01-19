@@ -1,0 +1,30 @@
+server:
+  port: 9090
+
+spring:
+  application:
+    name: Driver Domain
+
+driver:
+  ds:
+    poolName: driver
+    jdbcUrl: jdbc:postgresql://postgres:5432/driver_db
+    username: postgres
+    password: password
+    autocommit: false
+    maxPoolSize: 20
+    dataSourceProperties:
+#     Due to PostgreSQL having strict validation on strings (which by default JDBC will use for JSON strings).
+      stringtype: unspecified
+
+ddd:
+  kafka:
+    groupId: driver_app
+    topic: dbserver1.public.event
+    kafkaHosts:
+      - kafka:9092
+
+#logging:
+#  level:
+#    # Suppress a warning created by postgres not supporting clobs
+#    com.zaxxer.hikari.pool.ProxyConnection: ERROR

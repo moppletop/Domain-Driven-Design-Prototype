@@ -1,0 +1,12 @@
+*.iml
+*.ipr
+
+# File-based project format
+*.iws
+
+dependency-reduced-pom.xml
+
+# IntelliJ
+.DS_Store
+/.idea/
+target/
