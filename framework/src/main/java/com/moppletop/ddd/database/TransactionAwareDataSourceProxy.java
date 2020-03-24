@@ -13,7 +13,7 @@ import java.util.logging.Logger;
  * A {@link Transaction} aware datasource, useful to integrating with libraries such as JPA for your business models.
  * Means you don't need to mess around with getting other libraries to play ball with {@link ConnectionProvider}.
  *
- * Beware that while in a transaction, a connection's commit(), rollback() and close() operations will silently fail,
+ * Beware that while in a transaction, a connection's commit(), rollback() and close() operations will silently do nothing,
  * the overarching transaction should handle that
  */
 @RequiredArgsConstructor

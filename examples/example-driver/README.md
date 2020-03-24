@@ -6,7 +6,6 @@ It has 3 endpoints. There is an `OpenApi 3` spec for the REST API in this direct
 ## Try it out
 ### Prerequisites
 + Docker
-+ Curl/Postman
 
 ### Get it running
 From this directory:
@@ -14,34 +13,13 @@ From this directory:
 + `cd local-test`
 + `docker-compose build` Builds the custom postgres image and driver domain image
 + `docker-compose up` Starts all the containers
-+ `sh connect.sh` Adds a connector between the PostgreSQL and debezium plugin, you may need to wait before running this
-command. You'll know when it succeeds as a `JSON` body will be returned similar to this:
-```json
-{
-  "name": "driver_app",
-  "config": {
-    "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
-    "tasks.max": "1",
-    "database.hostname": "postgres",
-    "database.port": "5432",
-    "database.user": "postgres",
-    "database.password": "password",
-    "database.dbname": "driver_db",
-    "database.server.name": "dbserver1",
-    "database.whitelist": "driver_db",
-    "database.history.kafka.bootstrap.servers": "kafka:9092",
-    "database.history.kafka.topic": "schema-changes",
-    "name": "driver_app"
-  },
-  "tasks": [],
-  "type": "source"
-}
-```
-This script is why the requirement for curl exists, if you don't have curl then copy the script into Postman, or reverse engineer it
-into whatever you use.
 
-Now head to `http://localhost:9090` in your browser of choice and register some drivers!
+Now head to http://localhost:9090 in your browser of choice and register some drivers!
 If the logs of the driver domain app, show `Got an async event: ...` then it's all working.
+
+It may take a few seconds to startup as the driver app has to wait for the connector to fully startup before initialising.
+This isn't a requirement but because the image attempts to setup the connector between Postgres and Kafka on startup.
+See `image-scripts/entrypoint.bash`
 
 ### Debugging
 
@@ -83,7 +61,7 @@ Postgres.
 
 ### Query Driver
 #### Endpoint
-`/v1/query/driver/get?driverId=?`
+`/v1/query/driver/get/{driverId}`
 #### Domain Flow
 + driver_by_id (Query)
 + DriverRepository

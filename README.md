@@ -11,8 +11,8 @@ notable differences:
 2. Asynchronous event listeners are driven off a message stream, not a database table
 
 While every module of this framework is abstracted out. The default implementation uses
-a [Apache Kafka](https://kafka.apache.org/) event stream coupled with [PostgreSQL](https://www.postgresql.org/).
-This means events are driven off the PostgreSQL transaction logs and not a separate call to Kafka
+an [Apache Kafka](https://kafka.apache.org/) event stream coupled with [PostgreSQL](https://www.postgresql.org/).
+This means events are driven off the PostgreSQL replication logs and not a separate call to Kafka
 or any other messaging implementation. Thus, greatly reducing transaction complexity.
 
 Since an external messaging technology standard is used, the domain is not tied to one
@@ -48,19 +48,22 @@ Add the following to your `pom.xml`:
 
 #### No Spring
 ```xml
+<properties>
+    <ddd.version>1.1.0</ddd.version>
+</properties>
+
 <dependencies>
-    <!-- ... -->
 
     <dependency>
         <groupId>com.moppletop.ddd</groupId>
         <artifactId>ddd-framework</artifactId>
-        <version>1.0.0</version>
+        <version>${ddd.version}</version>
     </dependency>
     
     <dependency>
         <groupId>com.moppletop.ddd</groupId>
         <artifactId>ddd-event-broker-kafka</artifactId>
-        <version>1.0.0</version>
+        <version>${ddd.version}</version>
     </dependency>
 
 </dependencies>
@@ -69,10 +72,14 @@ Add the following to your `pom.xml`:
 #### Spring
 
 ```xml
+<properties>
+    <ddd.version>1.1.0</ddd.version>
+</properties>
+
 <dependency>
     <groupId>com.moppletop.ddd</groupId>
     <artifactId>ddd-spring-boot-kafka-starter</artifactId>
-    <version>1.0.0</version>
+    <version>${ddd.version}</version>
 </dependency>
 ```
 
@@ -115,15 +122,16 @@ public MyApp(DataSource dataSource) {
 
 #### Spring
 The `ddd-spring-boot-kafka-starter` will bring in an autoconfigure that will essentially do what is done
-in the No Spring section for you. If you want to configure the properties of the `KafkaEventStream` you can add the following
+in the No Spring section for you. It will also register beans in the default application context for all those objects.
+If you want to configure the properties of the `KafkaEventStream` you can add the following
 to your `application.yaml` or `application.properties`:
 
 ```yaml
-# Polling rate defaults to 1 second
 ddd:
   kafka:
     groupId: my-app
     topic: dbserver1.public.event
+    pollingRate: 1000 # This is the default
     kafkaHosts:
       - kafka:9092
 ```
@@ -136,16 +144,17 @@ is opened and has statements executed against it. One way of your business logic
 ```java
 @DomainEventHandler
 public void handle(CustomerRegistered event, ConnectionProvider connectionProvider) {
-    // You don't need to close the connection, but you can if you want.
     // Don't close or commit the connection, that will be handled for you!
+    // Read the following section on how to do better handle connections
     Connection connection = connectionProvider.getConnection();
 
     connection.prepareStatement(...);
 }
 ```
 
-Though sometimes you may have some logic which is apart of another library which you want to integrate with, or maybe you
-are using an ORM like JPA & Hibernate. The way around this is wrapping your `DataSource` in a `TransactionAwareDataSourceProxy`.
+Having to remember not to close or commit connections isn't very intuitive or very ideal when having to integrate with
+another library which you want to integrate with, or an ORM like JPA & Hibernate. 
+The way around this is wrapping your `DataSource` in a `TransactionAwareDataSourceProxy`.
 This will ensure that all transaction management is handled by the framework, when a thread is in a transaction, calls to
 `DataSource#getConnection()` will return the connection used by the current transaction. Though this connection will also be
 wrapped in a `TransactionAwareConnectionProxy`, which will have `commit()`, `rollback()` and `close()` edited to do nothing.

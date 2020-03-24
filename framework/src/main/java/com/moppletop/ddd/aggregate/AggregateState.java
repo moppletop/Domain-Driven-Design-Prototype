@@ -1,9 +1,6 @@
 package com.moppletop.ddd.aggregate;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Overarching transaction for application of aggregate events
@@ -57,7 +54,7 @@ public class AggregateState {
             throw new IllegalStateException("Transaction not active");
         }
 
-        transaction.eventBuffer.addAll(Arrays.asList(events));
+        Collections.addAll(transaction.eventBuffer, events);
     }
 
     private UUID aggregateId;

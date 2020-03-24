@@ -5,7 +5,7 @@
     <parent>
         <artifactId>ddd-examples</artifactId>
         <groupId>com.moppletop.ddd</groupId>
-        <version>1.0.0</version>
+        <version>1.1.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -15,6 +15,8 @@
     <properties>
         <swagger-annotations-v3.version>2.0.6</swagger-annotations-v3.version>
         <springfox.version>2.9.2</springfox.version>
+        <!-- Duplicated from ddd-spring since this project's parent is not the spring boot parent-->
+        <spring.version>2.1.4.RELEASE</spring.version>
     </properties>
 
     <dependencies>
@@ -23,12 +25,20 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+            <version>${spring.version}</version>
         </dependency>
 
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>ddd-spring-boot-kafka-starter</artifactId>
             <version>${project.version}</version>
+        </dependency>
+
+        <!-- Open API Generator -->
+        <dependency>
+            <groupId>org.openapitools</groupId>
+            <artifactId>jackson-databind-nullable</artifactId>
+            <version>0.2.1</version>
         </dependency>
 
         <!-- Swagger UI -->
@@ -104,7 +114,7 @@
             <plugin>
                 <groupId>org.openapitools</groupId>
                 <artifactId>openapi-generator-maven-plugin</artifactId>
-                <version>3.3.4</version>
+                <version>4.2.3</version>
                 <executions>
                     <execution>
                         <goals>
@@ -116,10 +126,12 @@
                             <generatorName>spring</generatorName>
                             <addCompileSourceRoot>true</addCompileSourceRoot>
 
-                            <!--<configHelp>true</configHelp>-->
                             <modelPackage>com.moppletop.ddd.driver.api.v1.model</modelPackage>
                             <apiPackage>com.moppletop.ddd.driver.api.v1.controller</apiPackage>
                             <invokerPackage>com.moppletop.ddd.driver.api.v1.stub</invokerPackage>
+
+                            <generateApiTests>false</generateApiTests>
+                            <generateModelTests>false</generateModelTests>
 
                             <configOptions>
                                 <sourceFolder>gen-src/main/java</sourceFolder>

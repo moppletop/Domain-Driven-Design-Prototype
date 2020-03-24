@@ -13,4 +13,5 @@ public class IllegalDomainDefinitionException extends RuntimeException {
     public IllegalDomainDefinitionException(Throwable cause) {
         super(cause);
     }
+
 }

@@ -36,11 +36,9 @@ public class KafkaEventStream implements EventStreamer {
 
     private final String groupId;
     private final String topic;
-    @Singular
     private final Collection<String> kafkaHosts;
     private final Duration pollingRate;
 
-    @Singular
     private final List<KafkaConsumerCustomiser> customisers;
 
     private final ObjectTransformer objectTransformer;
@@ -86,7 +84,7 @@ public class KafkaEventStream implements EventStreamer {
 
     @Override
     public void subscribe(String processingGroup, int threads) {
-        log.debug("Subscribing with {} thread(s) to processing group {}", threads, processingGroup);
+        log.debug("Subscribing with {} thread{} to processing group {}", threads, threads == 1 ? "" : "s", processingGroup);
         ThreadFactory threadFactory = new EventStreamThreadFactory(processingGroup);
 
         for (int i = 1; i <= threads; i++) {

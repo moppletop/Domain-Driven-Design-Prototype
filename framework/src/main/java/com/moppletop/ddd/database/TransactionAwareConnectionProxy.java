@@ -8,7 +8,7 @@ import java.util.Properties;
 import java.util.concurrent.Executor;
 
 /**
- * A proxy for a SQL connection, only difference is that commit(), rollback() and close() will silently fail
+ * A proxy for a SQL connection, only difference is that commit(), rollback() and close() will silently do nothing
  *
  * @see TransactionAwareDataSourceProxy
  */

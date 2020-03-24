@@ -28,8 +28,8 @@ public class ExplicitDependencyRegister implements DependencyRegister {
     }
 
     /**
-     * Registers a dependency. Note for dependencies that are state defendant, like the current transaction or timestamp of the event
-     * you'll need to register it as a TypeSafeSupplier, the get will be invoked when the {@link DependencyRegister#getDependency(Class)} is called
+     * Registers a dependency. Note for dependencies that are state dependant, like the current transaction or timestamp of the event
+     * you'll need to register it as a TypeSafeSupplier, the get() will be invoked when the {@link DependencyRegister#getDependency(Class)} is called
      * Due to how generic types are implemented a regular {@link Supplier} will throw a {@link IllegalArgumentException}, use a TypeSafeSupplier instead
      *
      * @param dependency the dependency (or supplier of the dependency) to register

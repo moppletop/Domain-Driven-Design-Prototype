@@ -25,7 +25,7 @@ import java.util.WeakHashMap;
 @RequiredArgsConstructor
 public class DefaultCommandGateway implements CommandGateway {
 
-    // Mao target aggregate id to a lock
+    // Map target aggregate id to a lock
     private static final Map<UUID, UUID> AGGREGATE_LOCKS = new WeakHashMap<>();
 
     protected static Object getSynchronisedObjectFor(UUID targetAggregateId) {
@@ -137,7 +137,7 @@ public class DefaultCommandGateway implements CommandGateway {
 
         // If the aggregate didn't exist
         if (!aggregate.exists()) {
-            // We'll an initial "empty" state for the aggregate so we can get a global id, since the events will
+            // We'll create an initial "empty" state for the aggregate so we can get a global id, since the events will
             // require it
             globalId = aggregateRepository.saveAggregate(transaction, aggregate);
         }

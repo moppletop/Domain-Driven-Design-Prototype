@@ -1,4 +1,4 @@
-FROM debezium/postgres
+FROM debezium/postgres:11-alpine
 
 ADD ./initdb.d /docker-entrypoint-initdb.d/
 

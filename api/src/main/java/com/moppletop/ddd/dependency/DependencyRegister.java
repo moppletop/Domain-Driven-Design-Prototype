@@ -1,7 +1,7 @@
 package com.moppletop.ddd.dependency;
 
 /**
- * A dependency register, keepers a mapping of dependencies which can be injected into Command/AggregateState/Event handlers
+ * A dependency register, keeps a mapping of dependencies which can be injected into Command/AggregateState/Event handlers
  */
 public interface DependencyRegister {
 

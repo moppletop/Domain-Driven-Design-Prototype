@@ -1,5 +1,12 @@
 FROM openjdk:8-alpine
 
-ADD target/ddd-example-driver-*-exec.jar /app/application.jar
+RUN apk update && apk add curl && apk add bash
 
-ENTRYPOINT exec java -jar /app/application.jar
+WORKDIR /app
+
+ADD image-scripts/entrypoint.bash entrypoint.bash
+RUN chmod +x entrypoint.bash
+
+ADD target/ddd-example-driver-*-exec.jar application.jar
+
+ENTRYPOINT /app/entrypoint.bash
