@@ -12,4 +12,4 @@ while true; do
   sleep 3
 done
 
-exec java -jar /app/application.jar
+exec java -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=2 -jar /app/application.jar

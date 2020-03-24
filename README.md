@@ -152,8 +152,8 @@ public void handle(CustomerRegistered event, ConnectionProvider connectionProvid
 }
 ```
 
-Having to remember not to close or commit connections isn't very intuitive or very ideal when having to integrate with
-another library which you want to integrate with, or an ORM like JPA & Hibernate. 
+Having to remember not to close or commit connections isn't very intuitive or ideal when having to integrate with
+another library or an ORM like JPA & Hibernate. 
 The way around this is wrapping your `DataSource` in a `TransactionAwareDataSourceProxy`.
 This will ensure that all transaction management is handled by the framework, when a thread is in a transaction, calls to
 `DataSource#getConnection()` will return the connection used by the current transaction. Though this connection will also be
