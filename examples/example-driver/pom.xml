@@ -16,7 +16,7 @@
         <swagger-annotations-v3.version>2.0.6</swagger-annotations-v3.version>
         <springfox.version>2.9.2</springfox.version>
         <!-- Duplicated from ddd-spring since this project's parent is not the spring boot parent-->
-        <spring.version>2.1.4.RELEASE</spring.version>
+        <spring.version>2.5.12</spring.version>
     </properties>
 
     <dependencies>
